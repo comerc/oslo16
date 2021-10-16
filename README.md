@@ -1,2 +1,3 @@
 # oslo16
-Collect data from JSON-files
+
+Collect app_id + app_hash from JSON-files
