@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 )
 
 type FileData struct {
@@ -18,11 +19,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	result := make(map[int64]string)
 	for _, f := range files {
 		if f.IsDir() {
 			continue
 		}
-		file, err := os.Open("./files/" + f.Name())
+		fileName := f.Name()
+		a := strings.Split(fileName, ".")
+		if len(a) != 2 || a[1] != "json" {
+			continue
+		}
+		file, err := os.Open("./files/" + fileName)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -34,6 +41,8 @@ func main() {
 		if err := json.Unmarshal(data, &fileData); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("%v\n", fileData)
+		result[fileData.AppId] = fileData.AppHash
 	}
+	fmt.Printf("%v", result)
+	fmt.Print("len: ", len(result))
 }
